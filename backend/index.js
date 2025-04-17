@@ -41,4 +41,4 @@ app.get("/", (req, res) => {
 connectDB();
 
 // Export handler for Vercel
-export default app;
+export const handler = serverless(app);
