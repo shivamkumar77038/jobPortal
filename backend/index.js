@@ -27,6 +27,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+await connectDB();
 
 // Routes
 app.use("/api/v1/user", userRoute);
@@ -39,7 +40,7 @@ app.get("/", (req, res) => {
 });
 
 // Connect DB before exporting handler
-await connectDB();
+
 
 // Export handler for Vercel
-export default  serverless(app);
+export const handler = serverless(app);
