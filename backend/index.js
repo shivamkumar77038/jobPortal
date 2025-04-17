@@ -39,8 +39,6 @@ app.get("/", (req, res) => {
     res.send("all working");
 });
 
-// Connect DB before exporting handler
 
+export default serverless(app);
 
-// Export handler for Vercel
-export const handler = serverless(app);
