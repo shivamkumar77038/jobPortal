@@ -39,7 +39,7 @@ app.get("/", (req, res) => {
 });
 
 // Connect DB before exporting handler
-connectDB();
+await connectDB();
 
 // Export handler for Vercel
 export const handler = serverless(app);
