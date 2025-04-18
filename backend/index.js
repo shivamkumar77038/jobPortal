@@ -1,20 +1,17 @@
-// api/index.js
-
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
-import connectDB from "./utils/db.js"; // make sure this path is correct
+import connectDB from "./utils/db.js";
 import userRoute from "./routes/user.route.js";
 import companyRoute from "./routes/company.route.js";
 import jobRoute from "./routes/job.route.js";
 import applicationRoute from "./routes/application.route.js";
 
-import serverless from "serverless-http";
-
 dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT;
 
 // Middleware
 app.use(express.json());
@@ -22,12 +19,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 const corsOptions = {
-    origin: 'http://localhost:5173', // or set to your frontend Vercel URL
+    origin: 'http://localhost:5173', // update to match frontend URL if hosted
     credentials: true
 };
-
 app.use(cors(corsOptions));
-await connectDB();
 
 // Routes
 app.use("/api/v1/user", userRoute);
@@ -39,6 +34,11 @@ app.get("/", (req, res) => {
     res.send("all working");
 });
 
+const startServer = async () => {
+    await connectDB();
+    app.listen(PORT, () => {
+        console.log(`backend running on ${PORT}`);
+    });
+};
 
-export default serverless(app);
-
+startServer();
