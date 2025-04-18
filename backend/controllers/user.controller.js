@@ -135,9 +135,14 @@ export const updateProfile = async (req, res) => {
         const file = req.file;
         if (file) {
             const fileUri = getDataUri(file);
-            const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+            const cloudResponse = await cloudinary.uploader.upload(fileUri.content, {
+                resource_type: "raw",
+                public_id: `resumes/${file.originalname.split('.')[0]}.pdf`
+            });
+            
 
             if (cloudResponse) {
+                
                 user.profile.resume = cloudResponse.secure_url; // Save Cloudinary URL
                 user.profile.resumeOriginalName = file.originalname; // Save original name
             }
@@ -149,6 +154,8 @@ export const updateProfile = async (req, res) => {
         if (phoneNumber) user.phoneNumber = phoneNumber;
         if (bio) user.profile.bio = bio;
         if (skills) user.profile.skills = skillsArray;
+        
+        
 
         await user.save();
 
@@ -160,6 +167,7 @@ export const updateProfile = async (req, res) => {
             phoneNumber: user.phoneNumber,
             role: user.role,
             profile: user.profile
+
         };
 
         return res.status(200).json({

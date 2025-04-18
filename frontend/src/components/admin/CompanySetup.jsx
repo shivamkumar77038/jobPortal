@@ -1,155 +1,80 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Navbar from '../shared/Navbar'
-import { Button } from '../ui/button'
-import { ArrowLeft, Loader2 } from 'lucide-react'
 import { Label } from '../ui/label'
 import { Input } from '../ui/input'
+import { Button } from '../ui/button'
+import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { COMPANY_API_END_POINT } from '@/utils/constant'
-import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
-import { useSelector } from 'react-redux'
-import useGetCompanyById from '@/hooks/useGetCompanyById'
+import { useDispatch } from 'react-redux'
+import { setSingleCompany } from '@/redux/companySlice'
 
-const CompanySetup = () => {
-    const params = useParams();
-    useGetCompanyById(params.id);
-    const [input, setInput] = useState({
-        name: "",
-        description: "",
-        website: "",
-        location: "",
-        file: null
-    });
-    const { singleCompany } = useSelector(store => store.company);
-    const [loading, setLoading] = useState(false);
+const CompanyCreate = () => {
     const navigate = useNavigate();
+    const [companyName, setCompanyName] = useState();
+    const dispatch = useDispatch();
 
-    const changeEventHandler = (e) => {
-        setInput({ ...input, [e.target.name]: e.target.value });
-    }
-
-    const changeFileHandler = (e) => {
-        const file = e.target.files?.[0];
-        setInput({ ...input, file });
-    }
-
-    const submitHandler = async (e) => {
-        e.preventDefault();
-        const formData = new FormData();
-        formData.append("name", input.name);
-        formData.append("description", input.description);
-        formData.append("website", input.website);
-        formData.append("location", input.location);
-        if (input.file) {
-            formData.append("file", input.file);
-        }
+    const registerNewCompany = async () => {
         try {
-            setLoading(true);
-            const res = await axios.put(`${COMPANY_API_END_POINT}/update/${params.id}`, formData, {
+            const res = await axios.post(`${COMPANY_API_END_POINT}/register`, { companyName }, {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'application/json'
                 },
                 withCredentials: true
             });
-            if (res.data.success) {
+            if (res?.data?.success) {
+                dispatch(setSingleCompany(res.data.company));
                 toast.success(res.data.message);
-                navigate("/admin/companies");
+                const companyId = res?.data?.company?._id;
+                navigate(`/admin/companies/${companyId}`);
             }
         } catch (error) {
             console.log(error);
-            toast.error(error.response.data.message);
-        } finally {
-            setLoading(false);
         }
     }
 
-    useEffect(() => {
-        setInput({
-            name: singleCompany.name || "",
-            description: singleCompany.description || "",
-            website: singleCompany.website || "",
-            location: singleCompany.location || "",
-            file: singleCompany.file || null
-        });
-    }, [singleCompany]);
-
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-gray-50">
             <Navbar />
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <form onSubmit={submitHandler}>
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 mb-8">
+            <div className="flex justify-center items-center px-4 py-10">
+                <div className="w-full max-w-md sm:max-w-lg md:max-w-2xl bg-white rounded-2xl shadow-md p-6 sm:p-10">
+                    <div className="text-center mb-8">
+                        <h1 className="text-2xl sm:text-3xl font-bold mb-2">Your Company Name</h1>
+                        <p className="text-gray-500 text-sm sm:text-base">
+                            What would you like to give your company name? You can change this later.
+                        </p>
+                    </div>
+
+                    <div className="mb-6">
+                        <Label className="block text-sm font-medium text-gray-700 mb-1">Company Name</Label>
+                        <Input
+                            type="text"
+                            className="w-full"
+                            placeholder="JobHunt, Microsoft etc."
+                            onChange={(e) => setCompanyName(e.target.value)}
+                        />
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row justify-end gap-3">
                         <Button
-                            onClick={() => navigate("/admin/companies")}
                             variant="outline"
-                            className="flex items-center gap-2 text-gray-500 font-semibold"
+                            className="w-full sm:w-auto"
+                            onClick={() => navigate("/admin/companies")}
                         >
-                            <ArrowLeft />
-                            <span>Back</span>
+                            Cancel
                         </Button>
-                        <h1 className="font-bold text-2xl sm:text-3xl">Company Setup</h1>
+                        <Button
+                            className="w-full sm:w-auto"
+                            onClick={registerNewCompany}
+                        >
+                            Continue
+                        </Button>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <div>
-                            <Label>Company Name</Label>
-                            <Input
-                                type="text"
-                                name="name"
-                                value={input.name}
-                                onChange={changeEventHandler}
-                            />
-                        </div>
-                        <div>
-                            <Label>Description</Label>
-                            <Input
-                                type="text"
-                                name="description"
-                                value={input.description}
-                                onChange={changeEventHandler}
-                            />
-                        </div>
-                        <div>
-                            <Label>Website</Label>
-                            <Input
-                                type="text"
-                                name="website"
-                                value={input.website}
-                                onChange={changeEventHandler}
-                            />
-                        </div>
-                        <div>
-                            <Label>Location</Label>
-                            <Input
-                                type="text"
-                                name="location"
-                                value={input.location}
-                                onChange={changeEventHandler}
-                            />
-                        </div>
-                        <div className="sm:col-span-2">
-                            <Label>Logo</Label>
-                            <Input
-                                type="file"
-                                accept="image/*"
-                                onChange={changeFileHandler}
-                            />
-                        </div>
-                    </div>
-                    {loading ? (
-                        <Button className="w-full mt-6">
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Please wait
-                        </Button>
-                    ) : (
-                        <Button type="submit" className="w-full mt-6">
-                            Update
-                        </Button>
-                    )}
-                </form>
+                </div>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default CompanySetup;
+export default CompanyCreate
