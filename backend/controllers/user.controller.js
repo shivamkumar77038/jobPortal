@@ -97,7 +97,8 @@ export const login = async (req, res) => {
             user,
             success: true,
             secure: true,
-             sameSite: 'None'
+             sameSite: 'None',
+             domain:'https://job-portalfrontend-ruby.vercel.app'
         })
     } catch (error) {
         console.log(error);
@@ -110,6 +111,7 @@ export const logout = async (req, res) => {
             success: true,
             sameSite: 'None',
             secure: true,
+            domain:'https://job-portalfrontend-ruby.vercel.app'
         })
     } catch (error) {
         console.log(error);
