@@ -45,6 +45,8 @@ export const applyJob = async (req, res) => {
         console.log(error);
     }
 };
+
+
 export const getAppliedJobs = async (req,res) => {
     try {
         const userId = req.id;
@@ -71,14 +73,17 @@ export const getAppliedJobs = async (req,res) => {
     }
 }
 // admin dekhega kitna user ne apply kiya hai
+
 export const getApplicants = async (req,res) => {
     try {
         const jobId = req.params.id;
         const job = await Job.findById(jobId).populate({
             path:'applications',
+            match: { status: { $in: ['pending', 'accepted'] } },
             options:{sort:{createdAt:-1}},
             populate:{
-                path:'applicant'
+                path:'applicant',
+                model: 'User',
             }
         });
         if(!job){
@@ -87,14 +92,16 @@ export const getApplicants = async (req,res) => {
                 success:false
             })
         };
+        
         return res.status(200).json({
             job, 
-            succees:true
+            success:true
         });
     } catch (error) {
         console.log(error);
     }
 }
+
 export const updateStatus = async (req,res) => {
     try {
         const {status} = req.body;

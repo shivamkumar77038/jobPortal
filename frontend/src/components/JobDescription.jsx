@@ -58,7 +58,7 @@ const JobDescription = () => {
                         <div className='flex flex-wrap gap-3 mt-4'>
                             <Badge className={'text-blue-700 font-bold'} variant="ghost">{singleJob?.position} Positions</Badge>
                             <Badge className={'text-[#F83002] font-bold'} variant="ghost">{singleJob?.jobType}</Badge>
-                            <Badge className={'text-[#7209b7] font-bold'} variant="ghost">{singleJob?.salary} LPA</Badge>
+                            <Badge className={'text-[#7209b7] font-bold'} variant="ghost">{(singleJob?.salary / 10000).toFixed(1)} LPA</Badge>
                         </div>
                     </div>
                     <Button
@@ -89,7 +89,7 @@ const JobDescription = () => {
                     </div>
                     <div>
                         <h3 className='font-semibold'>Salary:</h3>
-                        <p>{singleJob?.salary} LPA</p>
+                        <p>{singleJob?.salary}K</p>
                     </div>
                     <div>
                         <h3 className='font-semibold'>Total Applicants:</h3>
