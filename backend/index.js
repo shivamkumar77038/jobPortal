@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 const corsOptions = {
-    origin: 'https://job-portalfrontend-ruby.vercel.app', // update to match frontend URL if hosted
+    origin: "https://job-portalfrontend-ruby.vercel.app", // update to match frontend URL if hosted
     credentials: true
 };
 app.use(cors(corsOptions));
