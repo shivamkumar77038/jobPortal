@@ -14,15 +14,16 @@ const CompanyCreate = () => {
     const navigate = useNavigate();
     const [companyName, setCompanyName] = useState();
     const dispatch = useDispatch();
+
     const registerNewCompany = async () => {
         try {
-            const res = await axios.post(`${COMPANY_API_END_POINT}/register`, {companyName}, {
-                headers:{
-                    'Content-Type':'application/json'
+            const res = await axios.post(`${COMPANY_API_END_POINT}/register`, { companyName }, {
+                headers: {
+                    'Content-Type': 'application/json'
                 },
-                withCredentials:true
+                withCredentials: true
             });
-            if(res?.data?.success){
+            if (res?.data?.success) {
                 dispatch(setSingleCompany(res.data.company));
                 toast.success(res.data.message);
                 const companyId = res?.data?.company?._id;
@@ -32,25 +33,40 @@ const CompanyCreate = () => {
             console.log(error);
         }
     }
+
     return (
-        <div>
+        <div className="min-h-screen bg-white">
             <Navbar />
-            <div className='max-w-4xl mx-auto'>
+            <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8'>
                 <div className='my-10'>
-                    <h1 className='font-bold text-2xl'>Your Company Name</h1>
-                    <p className='text-gray-500'>What would you like to give your company name? you can change this later.</p>
+                    <h1 className='font-bold text-xl sm:text-2xl md:text-3xl'>Your Company Name</h1>
+                    <p className='text-gray-500 text-sm sm:text-base'>What would you like to give your company name? You can change this later.</p>
                 </div>
 
-                <Label>Company Name</Label>
-                <Input
-                    type="text"
-                    className="my-2"
-                    placeholder="JobHunt, Microsoft etc."
-                    onChange={(e) => setCompanyName(e.target.value)}
-                />
-                <div className='flex items-center gap-2 my-10'>
-                    <Button variant="outline" onClick={() => navigate("/admin/companies")}>Cancel</Button>
-                    <Button onClick={registerNewCompany}>Continue</Button>
+                <div className='flex flex-col'>
+                    <Label className='text-sm sm:text-base'>Company Name</Label>
+                    <Input
+                        type="text"
+                        className="my-2 w-full sm:w-3/4 md:w-2/3 lg:w-1/2"
+                        placeholder="JobHunt, Microsoft etc."
+                        onChange={(e) => setCompanyName(e.target.value)}
+                    />
+                </div>
+
+                <div className='flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 my-10'>
+                    <Button
+                        variant="outline"
+                        onClick={() => navigate("/admin/companies")}
+                        className="w-full sm:w-auto"
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={registerNewCompany}
+                        className="w-full sm:w-auto"
+                    >
+                        Continue
+                    </Button>
                 </div>
             </div>
         </div>
