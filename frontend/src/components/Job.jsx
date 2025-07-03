@@ -57,7 +57,7 @@ const Job = ({ job }) => {
                     {job?.jobType}
                 </Badge>
                 <Badge className="text-purple-700 bg-purple-100 hover:bg-purple-200 font-bold shadow" variant="ghost">
-                    {job?.salary} LPA
+                    {(job?.salary / 100000).toFixed(1)} LPA
                 </Badge>
             </div>
 
