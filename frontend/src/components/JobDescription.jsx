@@ -89,7 +89,7 @@ const JobDescription = () => {
                     </div>
                     <div>
                         <h3 className='font-semibold'>Salary:</h3>
-                        <p>{singleJob?.salary}K</p>
+                        <p>{singleJob?.salary}K/Month</p>
                     </div>
                     <div>
                         <h3 className='font-semibold'>Total Applicants:</h3>
